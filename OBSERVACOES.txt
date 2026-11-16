@@ -1,0 +1,22 @@
+UNIVASF — DESAFIOS FLUIG — ATIVIDADE 2 / ECM
+
+PRONTO NO CÓDIGO:
+- Formulário HTML com quatro seções e mais de 16 campos.
+- CSS responsivo e importações locais do Fluig Style Guide.
+- Campo Zoom configurado para dataset de laboratórios, com campo oculto de código.
+- Tabela pai-filho de equipamentos (três colunas) com adição, remoção e máscara SLG-00000.
+- Campos ocultos para os gateways e interfaces preparadas para as demais equipes.
+- Prévia local, roteiro de testes e contrato de integração.
+
+AINDA NÃO COMPROVADO:
+- Publicação e funcionamento no ambiente TOTVS Fluig.
+- Persistência depois de salvar/reabrir e recuperação das linhas filhas.
+- Seleção real no Zoom (dataset da Atividade 4 ainda não informado).
+- Prints das quatro etapas no processo real.
+
+MOTIVO:
+- Não foi disponibilizado acesso ao ambiente Fluig nem aos artefatos das demais equipes.
+- Validações obrigatórias e controle de etapa pertencem à Atividade 3.
+- Integração de cotação pertence à Atividade 5.
+
+IMPORTANTE: a prévia local é uma simulação visual/técnica e não equivale a aprovação nos critérios de aceite do Fluig.

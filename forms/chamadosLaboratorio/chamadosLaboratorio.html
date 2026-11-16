@@ -1,0 +1,225 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Central de Chamados | Laboratório de Informática</title>
+    <!-- Arquivos servidos pela própria instalação Fluig; sem dependências de CDN. -->
+    <link rel="stylesheet" href="/portal/resources/style-guide/css/fluig-style-guide.min.css">
+    <link rel="stylesheet" href="css/chamadosLaboratorio.css">
+    <script src="/portal/resources/js/jquery/jquery.js"></script>
+    <script src="/portal/resources/js/jquery/jquery-ui.min.js"></script>
+    <script src="/portal/resources/style-guide/js/fluig-style-guide.min.js"></script>
+</head>
+<body>
+<div class="fluig-style-guide flc-root">
+    <form name="form" id="formChamados" role="form" autocomplete="on">
+        <div class="flc-shell">
+            <header class="flc-header">
+                <div>
+                    <span class="flc-eyebrow">UNIVASF · Campus Salgueiro</span>
+                    <h1>Central de Chamados</h1>
+                    <p>Solicitação de suporte ao laboratório de informática</p>
+                </div>
+                <div class="flc-header-side">
+                    <span class="flc-mark">Atividade 2 · ECM</span>
+                    <span class="flc-small">Abertura, triagem, autorização e atendimento</span>
+                </div>
+            </header>
+
+            <!-- Campos técnicos: manter os nomes estáveis após integração com BPMN, eventos e datasets. -->
+            <input type="hidden" name="hidden_laboratorio" id="hidden_laboratorio">
+            <input type="hidden" name="laboratorio_codigo" id="laboratorio_codigo">
+            <input type="hidden" name="tecnico_matricula" id="tecnico_matricula">
+            <input type="hidden" name="rota_triagem" id="rota_triagem">
+            <input type="hidden" name="rota_autorizacao" id="rota_autorizacao">
+            <input type="hidden" name="total_equipamentos" id="total_equipamentos">
+            <input type="hidden" name="situacao_chamado" id="situacao_chamado">
+            <!-- Equipe da atividade 3 pode preencher este campo no displayFields para indicar a etapa. -->
+            <input type="hidden" name="etapa_atual" id="etapa_atual">
+
+            <nav class="flc-steps" aria-label="Etapas do chamado">
+                <a href="#secAbertura"><span class="flc-step-num">01</span><span>Abertura</span></a>
+                <a href="#secTriagem"><span class="flc-step-num">02</span><span>Triagem</span></a>
+                <a href="#secAutorizacao"><span class="flc-step-num">03</span><span>Autorização</span></a>
+                <a href="#secAtendimento"><span class="flc-step-num">04</span><span>Atendimento</span></a>
+            </nav>
+
+            <section id="secAbertura" class="flc-panel" data-stage="abertura">
+                <div class="flc-section-head">
+                    <div><span class="flc-section-number">ETAPA 01</span><h2>Abertura do chamado</h2>
+                        <p>Identifique o solicitante, o laboratório e os equipamentos afetados.</p></div>
+                    <span class="flc-section-chip">Solicitante</span>
+                </div>
+
+                <h3 class="flc-group-title">Identificação do solicitante</h3>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group"><label for="solicitante_nome">Nome completo <span class="flc-required">*</span></label>
+                            <input class="form-control" type="text" id="solicitante_nome" name="solicitante_nome" maxlength="120" placeholder="Nome do solicitante"></div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group"><label for="solicitante_matricula">Matrícula / SIAPE</label>
+                            <input class="form-control" type="text" id="solicitante_matricula" name="solicitante_matricula" maxlength="30" placeholder="Identificação institucional"></div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group"><label for="data_abertura">Data da abertura</label>
+                            <input class="form-control" type="date" id="data_abertura" name="data_abertura"></div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group"><label for="solicitante_email">E-mail institucional</label>
+                            <input class="form-control" type="email" id="solicitante_email" name="solicitante_email" maxlength="120" placeholder="usuario@univasf.edu.br"></div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group"><label for="solicitante_telefone">Telefone / ramal</label>
+                            <input class="form-control" type="tel" id="solicitante_telefone" name="solicitante_telefone" maxlength="30" placeholder="Contato (opcional)"></div>
+                    </div>
+                </div>
+
+                <h3 class="flc-group-title">Localização e ocorrência</h3>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                        <div class="form-group"><label for="laboratorio">Laboratório <span class="flc-required">*</span></label>
+                            <!-- contrato provisório da atividade 4: ds_laboratorios(codigo,nome,bloco,tecnico_matricula) -->
+                            <input type="zoom" class="form-control" id="laboratorio" name="laboratorio"
+                                   zoomvalue="codigo"
+                                   data-zoom="{'displayKey':'nome','datasetId':'ds_laboratorios','placeholder':'Pesquise o laboratório','maximumSelectionLength':1,'resultLimit':30,'fields':[{'field':'nome','label':'Laboratório','standard':true},{'field':'codigo','label':'Código','visible':'false'},{'field':'bloco','label':'Bloco'},{'field':'tecnico_matricula','label':'Matrícula do técnico','visible':'false'}]}">
+                            <p class="help-block">Pesquisa nativa do Fluig. Depende do dataset entregue pela Atividade 4.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group"><label for="laboratorio_bloco">Bloco</label>
+                            <input class="form-control" type="text" id="laboratorio_bloco" name="laboratorio_bloco" readonly placeholder="Preenchido pelo laboratório"></div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group"><label for="tipo_problema">Tipo de problema <span class="flc-required">*</span></label>
+                            <select class="form-control" name="tipo_problema" id="tipo_problema">
+                                <option value="">Selecione</option><option value="hardware">Hardware</option>
+                                <option value="software">Software</option><option value="rede">Rede / internet</option>
+                                <option value="dano_fisico">Dano físico</option><option value="outros">Outros</option>
+                            </select></div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="form-group"><label for="urgencia">Urgência <span class="flc-required">*</span></label>
+                            <select class="form-control" name="urgencia" id="urgencia">
+                                <option value="">Selecione</option><option value="baixa">Baixa</option>
+                                <option value="media">Média</option><option value="alta">Alta</option>
+                            </select></div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group"><label for="descricao_problema">Descrição detalhada <span class="flc-required">*</span></label>
+                            <textarea class="form-control" name="descricao_problema" id="descricao_problema" rows="4" maxlength="4000" placeholder="Explique o que aconteceu, quando começou e como reproduzir a falha."></textarea>
+                            <div class="flc-input-hint"><span id="avisoUrgencia">Urgência alta exige pelo menos 30 caracteres (validação da Atividade 3).</span><span id="contadorDescricao">0 caracteres</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flc-inline-head">
+                    <div><h3 class="flc-group-title flc-no-margin">Equipamentos afetados <span class="flc-required">*</span></h3>
+                        <p class="flc-subtitle">Adicione uma linha por patrimônio. O formato é SLG-00000.</p></div>
+                    <div class="flc-table-actions"><span class="flc-count" id="equipamentosContador">0 equipamentos</span>
+                        <button type="button" id="btnAdicionarEquipamento" class="btn btn-primary" onclick="adicionarEquipamento()">+ Adicionar equipamento</button>
+                    </div>
+                </div>
+                <div class="flc-table-wrapper">
+                    <table class="table table-bordered flc-equipment-table" id="tblEquipamentos" tablename="equipamentos_afetados"
+                           noaddbutton="true" customFnDelete="removerEquipamento(this)">
+                        <thead><tr><th scope="col" style="width:22%">Patrimônio</th><th scope="col" style="width:25%">Tipo</th><th scope="col">Descrição do problema</th></tr></thead>
+                        <tbody id="tbodyEquipamentos">
+                            <!-- Modelo: o Fluig clona esta linha e acrescenta ___indice em name/id. -->
+                            <tr>
+                                <td data-label="Patrimônio"><input type="text" class="form-control flc-patrimonio" id="equip_patrimonio" name="equip_patrimonio" data-patrimonio="true" maxlength="9" placeholder="SLG-00000" autocomplete="off"></td>
+                                <td data-label="Tipo"><select class="form-control" id="equip_tipo" name="equip_tipo">
+                                    <option value="">Selecione</option><option value="computador">Computador</option>
+                                    <option value="monitor">Monitor</option><option value="impressora">Impressora</option>
+                                    <option value="projetor">Projetor</option><option value="periferico">Periférico</option>
+                                    <option value="outros">Outros</option>
+                                </select></td>
+                                <td data-label="Descrição"><textarea class="form-control" id="equip_descricao" name="equip_descricao" rows="2" maxlength="500" placeholder="Descreva o defeito neste equipamento"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flc-attachment-note"><strong>Fotografias e anexos:</strong> use a aba <strong>Anexos</strong> da própria solicitação no Fluig. O formulário não substitui o gerenciador de anexos da plataforma.</div>
+            </section>
+
+            <section id="secTriagem" class="flc-panel" data-stage="triagem">
+                <div class="flc-section-head"><div><span class="flc-section-number">ETAPA 02</span><h2>Triagem técnica</h2>
+                    <p>Avaliação inicial do técnico responsável.</p></div><span class="flc-section-chip">Técnico</span></div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12"><div class="form-group"><label for="triagem_decisao">Decisão da triagem</label>
+                        <select class="form-control" id="triagem_decisao" name="triagem_decisao">
+                            <option value="">Selecione</option><option value="atender">Atender agora</option>
+                            <option value="peca">Necessita de peça</option><option value="improcedente">Improcedente</option>
+                            <option value="devolver">Devolver para correção</option>
+                        </select><p class="help-block">A decisão é espelhada no campo oculto <code>rota_triagem</code> para o BPMN.</p></div></div>
+                    <div class="col-md-6 col-sm-12"><div class="form-group"><label for="triagem_data">Data da triagem</label>
+                        <input type="date" class="form-control" name="triagem_data" id="triagem_data"></div></div>
+                    <div class="col-xs-12"><div class="form-group"><label for="triagem_diagnostico">Diagnóstico técnico</label>
+                        <textarea class="form-control" id="triagem_diagnostico" name="triagem_diagnostico" rows="3" maxlength="2000" placeholder="Registre a análise realizada"></textarea></div></div>
+                    <div class="col-xs-12"><div class="form-group"><label for="triagem_justificativa">Justificativa (improcedência ou devolução)</label>
+                        <textarea class="form-control" name="triagem_justificativa" id="triagem_justificativa" rows="2" maxlength="1500" placeholder="Justifique quando houver recusa ou devolução"></textarea></div></div>
+                </div>
+                <h3 class="flc-group-title">Peças e aquisição</h3>
+                <div class="row">
+                    <div class="col-md-4 col-sm-12"><div class="form-group"><label for="peca_importada">A peça é importada?</label>
+                        <select class="form-control" name="peca_importada" id="peca_importada"><option value="">Selecione</option><option value="sim">Sim</option><option value="nao">Não</option></select></div></div>
+                    <div class="col-md-5 col-sm-12"><div class="form-group"><label for="peca_descricao">Descrição da peça solicitada</label>
+                        <input type="text" class="form-control" id="peca_descricao" name="peca_descricao" maxlength="250" placeholder="Ex.: módulo de memória DDR4"></div></div>
+                    <div class="col-md-3 col-sm-12"><div class="form-group"><label for="peca_valor_usd">Valor da peça (USD)</label>
+                        <input type="number" class="form-control" min="0" step="0.01" inputmode="decimal" id="peca_valor_usd" name="peca_valor_usd" placeholder="0.00"></div></div>
+                </div>
+            </section>
+
+            <section id="secAutorizacao" class="flc-panel" data-stage="autorizacao">
+                <div class="flc-section-head"><div><span class="flc-section-number">ETAPA 03</span><h2>Autorização de compra</h2>
+                    <p>Decisão da coordenação sobre a aquisição de peças.</p></div><span class="flc-section-chip">Coordenação</span></div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12"><div class="form-group"><label for="autorizacao_decisao">Decisão</label>
+                        <select class="form-control" id="autorizacao_decisao" name="autorizacao_decisao">
+                            <option value="">Selecione</option><option value="autorizar">Autorizar</option><option value="negar">Negar</option>
+                        </select><p class="help-block">Espelhado em <code>rota_autorizacao</code> para o BPMN.</p></div></div>
+                    <div class="col-md-6 col-sm-12"><div class="form-group"><label for="autorizacao_data">Data da decisão</label>
+                        <input type="date" class="form-control" id="autorizacao_data" name="autorizacao_data"></div></div>
+                    <div class="col-xs-12"><div class="form-group"><label for="autorizacao_justificativa">Justificativa da recusa</label>
+                        <textarea class="form-control" id="autorizacao_justificativa" name="autorizacao_justificativa" rows="2" maxlength="1500" placeholder="Preencher quando a compra for negada"></textarea></div></div>
+                </div>
+                <div class="flc-quote-box"><h3 class="flc-group-title flc-no-margin">Cotação para peça importada</h3>
+                    <p class="flc-subtitle">Dados para preenchimento automático na Atividade 5. Não são calculados nesta etapa do projeto.</p>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12"><div class="form-group"><label for="cotacao_usd_brl">Cotação USD → BRL</label>
+                            <input type="text" class="form-control" id="cotacao_usd_brl" name="cotacao_usd_brl" readonly placeholder="Cotação da integração"></div></div>
+                        <div class="col-md-4 col-sm-12"><div class="form-group"><label for="cotacao_data">Data da cotação</label>
+                            <input type="text" class="form-control" id="cotacao_data" name="cotacao_data" readonly placeholder="Data informada pelo serviço"></div></div>
+                        <div class="col-md-4 col-sm-12"><div class="form-group"><label for="peca_valor_brl">Valor convertido (BRL)</label>
+                            <input type="text" class="form-control" id="peca_valor_brl" name="peca_valor_brl" readonly placeholder="Calculado pela integração"></div></div>
+                        <div class="col-md-6 col-sm-12"><div class="form-group"><label for="cotacao_status">Status da consulta</label>
+                            <input type="text" class="form-control" id="cotacao_status" name="cotacao_status" readonly placeholder="Pendente"></div></div>
+                        <div class="col-md-6 col-sm-12"><div class="form-group"><label for="peca_valor_brl_manual">Valor manual (BRL), se a integração falhar</label>
+                            <input type="number" class="form-control" min="0" step="0.01" inputmode="decimal" id="peca_valor_brl_manual" name="peca_valor_brl_manual" placeholder="0.00"></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="secAtendimento" class="flc-panel" data-stage="atendimento">
+                <div class="flc-section-head"><div><span class="flc-section-number">ETAPA 04</span><h2>Execução do atendimento</h2>
+                    <p>Registre a intervenção realizada e o tempo de serviço.</p></div><span class="flc-section-chip">Técnico</span></div>
+                <div class="row">
+                    <div class="col-xs-12"><div class="form-group"><label for="atendimento_solucao">Solução aplicada</label>
+                        <textarea class="form-control" id="atendimento_solucao" name="atendimento_solucao" rows="4" maxlength="4000" placeholder="Descreva os procedimentos executados e os resultados obtidos"></textarea></div></div>
+                    <div class="col-md-4 col-sm-12"><div class="form-group"><label for="atendimento_data">Data do atendimento</label>
+                        <input type="date" class="form-control" id="atendimento_data" name="atendimento_data"></div></div>
+                    <div class="col-md-4 col-sm-12"><div class="form-group"><label for="atendimento_tempo_min">Tempo gasto (minutos)</label>
+                        <input type="number" class="form-control" min="0" step="1" id="atendimento_tempo_min" name="atendimento_tempo_min" placeholder="Ex.: 45"></div></div>
+                    <div class="col-md-4 col-sm-12"><div class="form-group"><label for="atendimento_resultado">Resultado do atendimento</label>
+                        <select class="form-control" id="atendimento_resultado" name="atendimento_resultado">
+                            <option value="">Selecione</option><option value="resolvido">Resolvido</option><option value="nao_resolvido">Não resolvido</option>
+                        </select></div></div>
+                </div>
+            </section>
+            <footer class="flc-footer">Central de Chamados · Formulário da Atividade 2 (ECM) · Use os botões nativos do Fluig para salvar, enviar e gerenciar anexos.</footer>
+        </div>
+    </form>
+</div>
+<script src="js/chamadosLaboratorio.js"></script>
+</body>
+</html>
